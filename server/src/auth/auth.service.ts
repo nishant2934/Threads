@@ -81,7 +81,7 @@ export class AuthService {
                 return this.response.error("No otp or otp expired.")
             }
             if(user.otp !== otp){
-                return this.response.error("Wrong otp provided.")
+                return this.response.error("Invalid otp provided.")
             }
             const updated_user = await this.prisma.user.update({where:{id:user.id},data:{email_verified:true,otp:null,otp_created_at:null}})
             return this.response.success("Password changed Successfully.",updated_user);
@@ -113,23 +113,23 @@ export class AuthService {
         }
     }
 
-    async verifyOtpAndResetPassword( otp:number, email:string, password:string,) {
+    async verifyOtpAndResetPassword( otp:number, id:string, password:string,) {
         try {
-            if(!email || !password || !otp){
-                return this.response.error("Email, Password and otp required.") 
+            if(!id || !password || !otp){
+                return this.response.error("Id, Password and otp required.") 
             }
-            const user = await this.prisma.user.findUnique({where:{email}});
+            const user = await this.prisma.user.findFirst({where:{id}});
             if(!user){
-                return this.response.error("No such email is registered with us.")
+                return this.response.error("No such id is registered with us.")
             }
             if(!user.otp || moment().isAfter(moment(user.otp_created_at).add(1,"d"))){
                 return this.response.error("No otp or otp expired.")
             }
             if(user.otp !== otp){
-                return this.response.error("Wrong otp provided.")
+                return this.response.error("Invalid otp provided.")
             }
             password = await this.hash.hash(password);
-            const updated_user = await this.prisma.user.update({where:{id:user.id},data:{password,otp:null}})
+            const updated_user = await this.prisma.user.update({where:{id:user.id},data:{password,otp:null,otp_created_at:null}})
             return this.response.success("Password changed Successfully.",updated_user);
         } catch (error) {
             console.log(error);

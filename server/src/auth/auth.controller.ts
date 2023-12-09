@@ -34,4 +34,15 @@ export class AuthController {
         let {id,otp} = body;
         return this.auth.verifyEmailWithOtp(otp,id);
     }
+
+    @Post("forgot-password")
+    forgotPassword(@Body('email') email:string) {
+        return this.auth.forgotPassword(email);
+    }
+
+    @Post("reset-password-with-otp")
+    verifyOtpAndResetPassword(@Body() body: { otp: number,id:string, password:string }) {
+        let {otp,id,password} = body;
+        return this.auth.verifyOtpAndResetPassword(otp,id,password);
+    }
 }
