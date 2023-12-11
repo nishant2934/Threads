@@ -5,7 +5,7 @@ import { registerDto } from 'src/dto/register.dto';
 import { EncryptionService } from 'src/global-provider/encrytption.service';
 import { HashService } from 'src/global-provider/hash.service';
 import { ResponseService } from 'src/global-provider/responses.service';
-import { TransforerService } from 'src/global-provider/transformer.service';
+import { TransformerService } from 'src/global-provider/transformer.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -15,18 +15,19 @@ export class AuthService {
         private response: ResponseService,
         private hash: HashService,
         private encrypt: EncryptionService,
-        private transformer:TransforerService,
+        private transformer:TransformerService,
     ) { }
 
     async checker() {
-        return ""
+        const thread = await this.prisma.threads.findFirst({where:{id: "656ad45db92769e44713c658"},include:{user:true}})
+        return this.response.success("found thread.", thread)
     }
 
     async register(registerDto: registerDto) {
         try {
             registerDto.password = await this.hash.hash(registerDto.password);
             const user = await this.prisma.user.create({ data: registerDto, select:{name:true,user_name:true,email:true,} })
-            return this.response.success("Registration successfull.", user)
+            return this.response.success("Registration successful.", user)
         } catch (error) {
             return this.response.systemError(error)
         }

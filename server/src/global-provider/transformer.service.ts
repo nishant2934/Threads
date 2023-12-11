@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class TransforerService {
+export class TransformerService {
 
     renameObjKeys(keys_to_rename:string[],new_names:string[],obj:any, in_place:boolean = false) {
         let new_obj = in_place ? obj : structuredClone(obj);

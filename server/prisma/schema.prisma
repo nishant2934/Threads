@@ -16,4 +16,33 @@ model User {
     otp_created_at DateTime?
     createdAt  DateTime  @default(now())  
     updatedAt  DateTime  @updatedAt
+    threads Thread[]
+    comments Comment[]
 }
+
+model Thread {  
+    id     String   @id @default(auto()) @map("_id") @db.ObjectId  
+    user   User?   @relation(fields: [user_id], references: [id])
+    user_id String? @db.ObjectId 
+    heading String 
+    content   String
+    likes Int
+    dislikes Int
+    comments Comment[]
+}
+
+model Comment {  
+    id     String   @id @default(auto()) @map("_id") @db.ObjectId  
+    user   User?   @relation(fields: [user_id], references: [id])
+    user_id String? @db.ObjectId 
+    thread   Thread?   @relation(fields: [thread_id], references: [id])
+    thread_id String? @db.ObjectId
+        comment   Comment?   @relation(fields: [comment_id], references: [id])
+    comment_id String? @db.ObjectId
+    heading String 
+    content   String
+    likes Int
+    dislikes Int
+    comments Comment[]
+}
+
