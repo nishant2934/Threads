@@ -19,7 +19,7 @@ export class AuthService {
     ) { }
 
     async checker() {
-        const thread = await this.prisma.threads.findFirst({where:{id: "656ad45db92769e44713c658"},include:{user:true}})
+        const thread = await this.prisma.thread.findFirst({where:{id: "65772dde09e64e0f6d6777cf"},include:{user:true,comments:true}})
         return this.response.success("found thread.", thread)
     }
 
