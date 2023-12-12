@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as moment from 'moment';
 import { loginDto } from 'src/dto/login.dto';
 import { registerDto } from 'src/dto/register.dto';
@@ -16,19 +17,22 @@ export class AuthService {
         private hash: HashService,
         private encrypt: EncryptionService,
         private transformer:TransformerService,
+        private jwt:JwtService
     ) { }
 
     async checker() {
-        const thread = await this.prisma.thread.findFirst({where:{id: "65772dde09e64e0f6d6777cf"},include:{user:true,comments:true}})
-        return this.response.success("found thread.", thread)
+        // const thread = await this.prisma.comment.findFirst({where:{id: "6577301ac04772b8178d0e16"},include:{comments:{include:{comments:{include:{comments:{include:{comments:true}}}}}}}})
+        return this.response.success("made comment.","")
     }
 
     async register(registerDto: registerDto) {
         try {
             registerDto.password = await this.hash.hash(registerDto.password);
-            const user = await this.prisma.user.create({ data: registerDto, select:{name:true,user_name:true,email:true,} })
-            return this.response.success("Registration successful.", user)
+            const user = await this.prisma.user.create({ data: registerDto, select:{name:true,user_name:true,email:true,id:true} });
+            const token = await this.jwt.signAsync({id:user.id});
+            return this.response.success("Registration successful.", {...user,token})
         } catch (error) {
+            console.log(error)
             return this.response.systemError(error)
         }
     }
@@ -36,13 +40,15 @@ export class AuthService {
     async login(loginDto: loginDto) {
         try {
             const { email, password } = loginDto;
-            const user = await this.prisma.user.findFirst({ where: { email }, select:{password:true,name:true,user_name:true,email:true}})
+            const user = await this.prisma.user.findFirst({ where: { email }, select:{password:true,name:true,user_name:true,email:true,id:true}})
             if (user && this.hash.compare(password, user.password)) {
                 this.transformer.deleteObjKeys(["password"],user,true);
-                return this.response.success("Login Successfull", user)
+                const token = await this.jwt.signAsync({id:user.id});
+                return this.response.success("Login Successful.", {...user,token})
             }
             else return this.response.error("Credentials does not match.")
         } catch (error) {
+            console.log(error)
             return this.response.systemError(error)
         }
     }

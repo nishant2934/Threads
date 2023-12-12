@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty ,MinLength,Validate} from 'class-validator';
-import { uniqueEmailvalidation } from 'src/validations/uniqueEmail.validation';
+import { uniqueEmailValidation } from 'src/validations/uniqueEmail.validation';
 
 export class registerDto {
   @MinLength(3)
@@ -15,6 +15,6 @@ export class registerDto {
   password: string;
 
   @IsEmail()
-  @Validate(uniqueEmailvalidation)
+  @Validate(uniqueEmailValidation)
   email: string;
 }

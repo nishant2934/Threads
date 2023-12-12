@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @ValidatorConstraint({ name: 'email', async: true })
 @Injectable()
-export class uniqueEmailvalidation implements ValidatorConstraintInterface {
+export class uniqueEmailValidation implements ValidatorConstraintInterface {
     constructor(private readonly prisma: PrismaService) { }
     async validate(value: string): Promise<boolean> {
         try {
