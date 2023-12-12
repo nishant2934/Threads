@@ -4,11 +4,15 @@ import { Request, Response, NextFunction } from 'express';
 import * as moment from 'moment';
 import { ResponseService } from 'src/global-provider/responses.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+interface ExtendedRequest extends Request {
+    user_id?: string;
+}
+
 
 @Injectable()
 export class JwtMiddleWare implements NestMiddleware {
     constructor(private readonly prisma: PrismaService, private response: ResponseService, private jwt: JwtService) { }
-    async use(req: Request, res: Response, next: NextFunction) {
+    async use(req: ExtendedRequest, res: Response, next: NextFunction) {
         try {
             let authorization = req?.headers?.authorization;
             if (!authorization) {
@@ -24,10 +28,10 @@ export class JwtMiddleWare implements NestMiddleware {
             if(!user){
                 return res.json(this.response.error("Invalid token."))
             }
-            if((exp - current) < 3600){
-                //if token is about to be expired in the next hour 
-                //here will be making a socket call to frontend to refresh  the saved token
-            }
+            // if token is about to be expired in the next hour
+            // here will be making a socket call to frontend to refresh  the saved token
+            if((exp - current) < 3600){}
+            req.user_id = id;
             next()
         } catch (error) {
             return res.json(this.response.systemError(error))

@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe,Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe,Query, Request} from '@nestjs/common';
 import { ThreadService } from './thread.service';
 
 @Controller('thread')
 export class ThreadController {
     constructor(private readonly thread: ThreadService) { }
-
     @Get("")
-    test(){
+    test(@Request() req:any){
+        console.log(req.user_id)
         return this.thread.test();
     }
 
