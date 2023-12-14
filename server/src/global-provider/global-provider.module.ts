@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ResponseService } from './responses.service';
-import { EncryptionService } from './encrytption.service';
+import { EncryptionService } from './encryption.service';
 import { HashService } from './hash.service';
 import { TransformerService } from './transformer.service';
 

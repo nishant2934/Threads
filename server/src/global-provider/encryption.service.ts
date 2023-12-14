@@ -16,12 +16,15 @@ export class EncryptionService {
 
     encrypt(data: string) {
         const cipher = createCipheriv('aes-256-ctr', this.key, this.iv);
-        return Buffer.concat([cipher.update(data, 'utf-8'), cipher.final()]);
+        const buffer_data =  Buffer.concat([cipher.update(data, 'utf-8'), cipher.final()]);
+        return buffer_data.toString("base64")
     }
 
-    decrypt(data: Buffer) {
+
+    decrypt(data: string) {
+        const buffer_data = Buffer.from(data,'base64');
         const decipher = createDecipheriv('aes-256-ctr', this.key, this.iv);
-        const deciphered =  Buffer.concat([decipher.update(data), decipher.final()]);
+        const deciphered =  Buffer.concat([decipher.update(buffer_data), decipher.final()]);
         return deciphered.toString('utf-8')
     }
 

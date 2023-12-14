@@ -14,6 +14,7 @@ import { JwtMiddleWare } from './middlewares/jwt.middleware';
   providers: [AppService, uniqueEmailValidation],
   exports: []
 })
+
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(JwtMiddleWare).exclude("auth").forRoutes('*');

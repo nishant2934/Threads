@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as moment from 'moment';
-import { loginDto } from 'src/dto/login.dto';
-import { registerDto } from 'src/dto/register.dto';
-import { EncryptionService } from 'src/global-provider/encrytption.service';
+import { loginDto } from 'src/auth/dto/login.dto';
+import { registerDto } from 'src/auth/dto/register.dto';
+import { EncryptionService } from 'src/global-provider/encryption.service';
 import { HashService } from 'src/global-provider/hash.service';
 import { ResponseService } from 'src/global-provider/responses.service';
 import { TransformerService } from 'src/global-provider/transformer.service';
