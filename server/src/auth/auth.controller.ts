@@ -13,13 +13,13 @@ export class AuthController {
     }
 
     @Post("register")
-    @UsePipes(new ValidationPipe({ transform: true }))
+    @UsePipes(new ValidationPipe({ transform: true,whitelist:true }))
     register(@Body() registerDto : registerDto) {
         return this.auth.register(registerDto)
     }
 
     @Post("login")
-    @UsePipes(new ValidationPipe({ transform: true }))
+    @UsePipes(new ValidationPipe({ transform: true,whitelist:true }))
     login(@Body() loginDto : loginDto) {
         return this.auth.login(loginDto);
     }

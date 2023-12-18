@@ -7,9 +7,10 @@ import { uniqueEmailValidation } from './validations/uniqueEmail.validation';
 import { GlobalProviderModule } from './global-provider/global-provider.module';
 import { ThreadModule } from './thread/thread.module';
 import { JwtMiddleWare } from './middlewares/jwt.middleware';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, GlobalProviderModule, ThreadModule],
+  imports: [PrismaModule, AuthModule, GlobalProviderModule, ThreadModule, CommentModule],
   controllers: [AppController],
   providers: [AppService, uniqueEmailValidation],
   exports: []

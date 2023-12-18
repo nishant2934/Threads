@@ -7,9 +7,9 @@ export class threadEditionDto {
     @IsNotEmpty()
     thread_id: string;
 
-    @IsOptional()
+    @IsNotEmpty()
     heading:string;
 
-    @IsOptional()
+    @IsNotEmpty()
     content:string;
 }

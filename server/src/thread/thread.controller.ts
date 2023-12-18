@@ -13,13 +13,13 @@ export class ThreadController {
     }
 
     @Post("create")
-    @UsePipes(new ValidationPipe({transform:true}))
+    @UsePipes(new ValidationPipe({transform:true,whitelist:true}))
     create(@Body() thread: threadCreationDto){
         return this.thread.create(thread)
     }
 
     @Post("delete")
-    @UsePipes(new ValidationPipe({transform:true}))
+    @UsePipes(new ValidationPipe({transform:true,whitelist:true}))
     delete(@Body() thread: threadDeletionDto){
         return this.thread.delete(thread)
     }
@@ -27,7 +27,6 @@ export class ThreadController {
     @Post("edit")
     @UsePipes(new ValidationPipe({transform:true,whitelist:true}))
     edit(@Body() thread: threadEditionDto){
-        console.log(thread);
-        return 
+        return this.thread.edit(thread)
     }
 }
