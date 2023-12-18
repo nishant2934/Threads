@@ -28,8 +28,8 @@ model Thread {
     user_id String? @db.ObjectId 
     heading String
     content   String
-    likes Int?
-    dislikes Int?
+    likes Int  @default(0)
+    dislikes Int @default(0)
     comments Comment[]
 }
 
@@ -40,8 +40,8 @@ model Comment {
     thread   Thread?   @relation(fields: [thread_id], references: [id])
     thread_id String? @db.ObjectId 
     content   String
-    likes Int?
-    dislikes Int?
+    likes Int @default(0)
+    dislikes Int @default(0)
     comment_id String? @db.ObjectId
     comment   Comment?   @relation("commentsOnThisComment", fields: [comment_id], references: [id],onDelete: NoAction, onUpdate: NoAction)
     comments  Comment[]  @relation("commentsOnThisComment")
