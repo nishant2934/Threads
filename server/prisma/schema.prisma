@@ -28,7 +28,6 @@ model User {
     createdAt  DateTime  @default(now())  
     updatedAt  DateTime  @updatedAt
 }
-
 model Thread {  
     id     String   @id @default(auto()) @map("_id") @db.ObjectId  
     user_id String? @db.ObjectId
@@ -66,3 +65,4 @@ model Comment {
     updatedAt  DateTime  @updatedAt
 }
 
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODE4ODNkZGNjMWQ1MGQzNWJhNGQ5ZCIsImlhdCI6MTcwMjk4NzgzNywiZXhwIjoxNzAzMDc0MjM3fQ.A_TPeMp4onSIBf0i9p0HgT8dxPmYSrnWbmv-drUS6hE

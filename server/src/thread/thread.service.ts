@@ -16,7 +16,7 @@ export class ThreadService {
 
     async getThread(id:string) {
         try {
-            let thread = await this.prisma.thread.findFirst({where:{id},include:{liked_by:true, disliked_by:true}});
+            let thread = await this.prisma.thread.findFirst({where:{id}});
             if(!thread){
                 return this.response.error("Sorry, No such thread found");
             }
