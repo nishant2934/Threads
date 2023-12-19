@@ -6,7 +6,6 @@ generator client {
     provider = "prisma-client-js"
 } 
 
-
 model User {  
     id     String   @id @default(auto()) @map("_id") @db.ObjectId  
     name   String
@@ -16,21 +15,35 @@ model User {
     email_verified Boolean @default(false)
     otp Int?
     otp_created_at DateTime?
-    createdAt  DateTime  @default(now())  
-    updatedAt  DateTime  @updatedAt
     threads Thread[]
     comments Comment[]
+    liked_threads_ids String[]   @db.ObjectId
+    liked_threads  Thread[] @relation("threadsLikedByUsers",fields: [liked_threads_ids], references: [id])
+    disliked_threads_ids String[]   @db.ObjectId
+    disliked_threads  Thread[] @relation("threadsDislikedByUsers",fields: [disliked_threads_ids], references: [id])
+    liked_comments_ids String[]   @db.ObjectId
+    liked_comments  Comment[] @relation("commentsLikedByUsers",fields: [liked_comments_ids], references: [id])
+    disliked_comments_ids String[]   @db.ObjectId
+    disliked_comments  Comment[] @relation("commentsDislikedByUsers",fields: [disliked_comments_ids], references: [id])
+    createdAt  DateTime  @default(now())  
+    updatedAt  DateTime  @updatedAt
 }
 
 model Thread {  
     id     String   @id @default(auto()) @map("_id") @db.ObjectId  
+    user_id String? @db.ObjectId
     user   User?   @relation(fields: [user_id], references: [id])
-    user_id String? @db.ObjectId 
+    liked_by_ids String[] @db.ObjectId
+    liked_by   User[]   @relation("threadsLikedByUsers",fields: [liked_by_ids], references: [id])
+    disliked_by_ids String[] @db.ObjectId
+    disliked_by   User[]   @relation("threadsDislikedByUsers",fields: [disliked_by_ids], references: [id])
     heading String
     content   String
     likes Int  @default(0)
     dislikes Int @default(0)
     comments Comment[]
+    createdAt  DateTime  @default(now())  
+    updatedAt  DateTime  @updatedAt
 }
 
 model Comment {  
@@ -39,12 +52,17 @@ model Comment {
     user_id String? @db.ObjectId 
     thread   Thread?   @relation(fields: [thread_id], references: [id])
     thread_id String? @db.ObjectId 
+    liked_by_ids String[] @db.ObjectId
+    liked_by   User[]   @relation("commentsLikedByUsers",fields: [liked_by_ids], references: [id])
+    disliked_by_ids String[] @db.ObjectId
+    disliked_by   User[]   @relation("commentsDislikedByUsers",fields: [disliked_by_ids], references: [id])
     content   String
     likes Int @default(0)
     dislikes Int @default(0)
     comment_id String? @db.ObjectId
     comment   Comment?   @relation("commentsOnThisComment", fields: [comment_id], references: [id],onDelete: NoAction, onUpdate: NoAction)
     comments  Comment[]  @relation("commentsOnThisComment")
+    createdAt  DateTime  @default(now())  
+    updatedAt  DateTime  @updatedAt
 }
-
 
