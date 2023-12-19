@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe,Query, Request} from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe,Query, Request, Param} from '@nestjs/common';
 import { ThreadService } from './thread.service';
 import { threadCreationDto } from './dto/threadCreation.dto';
 import { threadDeletionDto } from './dto/threadDeletion.dto';
@@ -10,6 +10,11 @@ export class ThreadController {
     @Get("")
     test(@Body() body:{user_id:string}){
         return this.thread.test(body);
+    }
+
+    @Get(":id")
+    getThread(@Param() params: any){
+        return this.thread.getThread(params.id);
     }
 
     @Post("create")

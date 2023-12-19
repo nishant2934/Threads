@@ -1,50 +1,75 @@
-datasource db {  
-    provider = "mongodb"
-    url = env("DATABASE_URL")
-} 
-generator client {  
-    provider = "prisma-client-js"
-} 
-
-
-model User {  
-    id     String   @id @default(auto()) @map("_id") @db.ObjectId  
-    name   String
-    user_name String 
-    email  String   @unique  
-    password String
-    email_verified Boolean @default(false)
-    otp Int?
-    otp_created_at DateTime?
-    createdAt  DateTime  @default(now())  
-    updatedAt  DateTime  @updatedAt
-    threads Thread[]
-    comments Comment[]
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
-model Thread {  
-    id     String   @id @default(auto()) @map("_id") @db.ObjectId  
-    user   User?   @relation(fields: [user_id], references: [id])
-    user_id String? @db.ObjectId 
-    heading String
-    content   String
-    likes Int  @default(0)
-    dislikes Int @default(0)
-    comments Comment[]
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Comment {  
-    id     String   @id @default(auto()) @map("_id") @db.ObjectId  
-    user   User?   @relation(fields: [user_id], references: [id])
-    user_id String? @db.ObjectId 
-    thread   Thread?   @relation(fields: [thread_id], references: [id])
-    thread_id String? @db.ObjectId 
-    content   String
-    likes Int @default(0)
-    dislikes Int @default(0)
-    comment_id String? @db.ObjectId
-    comment   Comment?   @relation("commentsOnThisComment", fields: [comment_id], references: [id],onDelete: NoAction, onUpdate: NoAction)
-    comments  Comment[]  @relation("commentsOnThisComment")
+model User {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  user_name      String
+  email          String        @unique
+  password       String
+  email_verified Boolean       @default(false)
+  otp            Int?
+  otp_created_at DateTime?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  threads        Thread[]
+  comments       Comment[]
+  user_details   UserDetails[]
 }
 
+model UserDetails {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id             String?  @db.ObjectId
+  user                User?    @relation(fields: [user_id], references: [id])
+  liked_thread_id     String?  @db.ObjectId
+  liked_thread        Thread?  @relation("likedThreads", fields: [liked_thread_id], references: [id])
+  disliked_thread_id  String?  @db.ObjectId
+  disliked_thread     Thread?  @relation("dislikedThreads", fields: [disliked_thread_id], references: [id])
+  liked_comment_id    String?  @db.ObjectId
+  liked_comment       Comment? @relation("likedComments", fields: [liked_comment_id], references: [id])
+  disliked_comment_id String?  @db.ObjectId
+  disliked_comment    Comment? @relation("dislikedComments", fields: [disliked_comment_id], references: [id])
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
 
+model Thread {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  user        User?         @relation(fields: [user_id], references: [id])
+  user_id     String?       @db.ObjectId
+  heading     String
+  content     String
+  likes       Int           @default(0)
+  dislikes    Int           @default(0)
+  comments    Comment[]
+  liked_by    UserDetails[] @relation("likedThreads")
+  disliked_by UserDetails[] @relation("dislikedThreads")
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+}
+
+model Comment {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  user        User?         @relation(fields: [user_id], references: [id])
+  user_id     String?       @db.ObjectId
+  thread      Thread?       @relation(fields: [thread_id], references: [id])
+  thread_id   String?       @db.ObjectId
+  content     String
+  likes       Int           @default(0)
+  dislikes    Int           @default(0)
+  comment_id  String?       @db.ObjectId
+  comment     Comment?      @relation("commentsOnThisComment", fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  comments    Comment[]     @relation("commentsOnThisComment")
+  liked_by    UserDetails[] @relation("likedComments")
+  disliked_by UserDetails[] @relation("dislikedComments")
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+}
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODE2ZGVhMjU3YTQ4OWViMDIwYzg2YyIsImlhdCI6MTcwMjk4MTA5OCwiZXhwIjoxNzAzMDY3NDk4fQ.rdQPvoZ8N0VECLJ-AQy8CKlzFBH9zUKG26ocPLCfKlM
