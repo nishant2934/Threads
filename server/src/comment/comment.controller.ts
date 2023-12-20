@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { commentOnThreadDto } from './dto/commentOnThread.dto';
 import { commentOnCommentDto } from './dto/commentOnComment.dto';
@@ -6,6 +6,28 @@ import { commentOnCommentDto } from './dto/commentOnComment.dto';
 @Controller('comment')
 export class CommentController {
     constructor(private readonly comment: CommentService) { }
+
+    @Get("")
+    getThreadsWithPagination(@Query() filters: any){
+        let { skip, take, search, order_by, order } = filters;
+        return this.comment.getCommentsWithPagination(skip,take,search,order_by,order);
+    }
+
+    @Get(":id")
+    getComment(@Param() params: any){
+        return this.comment.getComment(params.id);
+    }
+
+    @Get("like/:id")
+    likeComment(@Param() params: any, @Body('user_id') user_id: string) {
+        return this.comment.likeComment(params.id, user_id);
+    }
+
+    
+    @Get("dislike/:id")
+    dislikeComment(@Param() params: any, @Body('user_id') user_id: string) {
+        return this.comment.dislikeComment(params.id, user_id);
+    }
 
     @Post("create-on-thread")
     @UsePipes(new ValidationPipe({transform:true,whitelist:true}))
@@ -18,4 +40,7 @@ export class CommentController {
     create(@Body() comment:commentOnCommentDto){
         return this.comment.commentOnComment(comment);
     }
+
+
+
 }

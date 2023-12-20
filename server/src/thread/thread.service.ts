@@ -27,9 +27,9 @@ export class ThreadService {
         }
       }
       let threads_count = await this.prisma.thread.findMany(filter_object);
-      filter_object = {...filter_object , skip: skip ? parseInt(skip) : 0, take: take ? parseInt(take) : 10, select: ThreadModel }
+      filter_object = { ...filter_object, skip: skip ? parseInt(skip) : 0, take: take ? parseInt(take) : 10, select: ThreadModel }
       let threads = await this.prisma.thread.findMany(filter_object);
-      return this.response.success('Fetched threads successfully',{records:threads, total_records:threads_count.length});
+      return this.response.success('Fetched threads successfully', { records: threads, total_records: threads_count.length });
     } catch (error) {
       console.log(error);
       return this.response.systemError(error);
