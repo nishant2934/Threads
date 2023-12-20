@@ -24,7 +24,6 @@ export class ThreadController {
         return this.thread.likeThread(params.id, user_id);
     }
 
-    
     @Get("dislike/:id")
     dislikeThread(@Param() params: any, @Body('user_id') user_id: string) {
         return this.thread.dislikeThread(params.id, user_id);
