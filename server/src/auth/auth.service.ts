@@ -8,6 +8,7 @@ import { HashService } from 'src/global-provider/hash.service';
 import { ResponseService } from 'src/global-provider/responses.service';
 import { TransformerService } from 'src/global-provider/transformer.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import {UserModel} from "src/constants";
 
 @Injectable()
 export class AuthService {
