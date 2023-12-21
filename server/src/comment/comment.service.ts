@@ -10,7 +10,7 @@ import { CommentModel } from 'src/constants';
 export class CommentService {
     constructor(private prisma: PrismaService, private response: ResponseService) { }
 
-    async getCommentsWithPagination(skip: string, take: string, search: string, order_by: string, order: string) {
+    async getCommentsWithPagination(skip: string, take: string, search: string, order_by: string, order: string, user_id: string) {
         try {
             let filter_object = {};
             if (search && search.length) {
@@ -24,7 +24,30 @@ export class CommentService {
                 }
             }
             let comments_count = await this.prisma.comment.findMany(filter_object);
-            filter_object = { ...filter_object, skip: skip ? parseInt(skip) : 0, take: take ? parseInt(take) : 10, select: CommentModel }
+            filter_object = {
+                ...filter_object,
+                skip: skip ? parseInt(skip) : 0,
+                take: take ? parseInt(take) : 10,
+                select: {
+                    ...CommentModel,
+                    liked_by: {
+                        where: {
+                            user_id
+                        },
+                        select: {
+                            user_id: true
+                        }
+                    },
+                    disliked_by: {
+                        where: {
+                            user_id
+                        },
+                        select: {
+                            user_id: true
+                        }
+                    },
+                },
+            }
             let comments = await this.prisma.comment.findMany(filter_object);
             return this.response.success('Fetched comments successfully', { records: comments, total_records: comments_count.length });
         } catch (error) {

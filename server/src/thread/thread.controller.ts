@@ -9,9 +9,9 @@ export class ThreadController {
     constructor(private readonly thread: ThreadService) { }
 
     @Get("")
-    getThreadsWithPagination(@Query() filters: any){
+    getThreadsWithPagination(@Query() filters: any,@Body("user_id") user_id:string){
         let { skip, take, search, order_by, order } = filters;
-        return this.thread.getThreadsWithPagination(skip,take,search,order_by,order);
+        return this.thread.getThreadsWithPagination(skip,take,search,order_by,order,user_id);
     }
 
     @Get(":id")
