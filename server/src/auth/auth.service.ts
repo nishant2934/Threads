@@ -8,7 +8,7 @@ import { HashService } from 'src/global-provider/hash.service';
 import { ResponseService } from 'src/global-provider/responses.service';
 import { TransformerService } from 'src/global-provider/transformer.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import {UserModel} from "src/constants";
+import { GatewayService } from 'src/gateway/gateway.service';
 
 @Injectable()
 export class AuthService {
@@ -18,11 +18,13 @@ export class AuthService {
         private hash: HashService,
         private encrypt: EncryptionService,
         private transformer:TransformerService,
-        private jwt:JwtService
+        private jwt:JwtService,
+        private readonly gateway: GatewayService,
     ) { }
 
     async checker() {
         // const thread = await this.prisma.comment.findFirst({where:{id: "6577301ac04772b8178d0e16"},include:{comments:{include:{comments:{include:{comments:{include:{comments:true}}}}}}}})
+        this.gateway.server.emit("cnt", "this is from cnt")
         return this.response.success("made comment.","")
     }
 

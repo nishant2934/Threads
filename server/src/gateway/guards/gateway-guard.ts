@@ -1,13 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as moment from 'moment';
-import { EncryptionService } from 'src/global-provider/encryption.service';
-import { ResponseService } from 'src/global-provider/responses.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GatewayGuard implements CanActivate {
-    constructor(private readonly prisma: PrismaService, private response: ResponseService, private jwt: JwtService, private encryption: EncryptionService) { }
+    constructor(private readonly prisma: PrismaService, private jwt: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> {
         try {
             if (context.getType() !== "ws") {

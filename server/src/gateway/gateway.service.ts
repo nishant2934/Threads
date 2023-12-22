@@ -60,5 +60,5 @@ export class GatewayService implements OnGatewayConnection, OnGatewayDisconnect,
       this.server.to(item._id).emit('message-received', newMessage);
     });
   }
-
+  
 }
