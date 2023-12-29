@@ -4,6 +4,7 @@ import { NextPage } from 'next'
 import { redirect, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import Home from '../page';
 
 interface Props {
   children: ReactNode;
@@ -21,11 +22,11 @@ const MiddlewareProvider: NextPage<Props> = ({ children }) => {
     setGoTo(path);
   }
 
-  const handleUserAuthentication = () => {
+  const handleUserAuthentication = async () => {
     const pathList = path.split("/");
     if (["login", "register", "forgot-password", "reset-password"].includes(pathList[1])) {
       setTimeout(() => {
-        user.authenticated ? validatedRedirect("/user/profile") : setCheck(0)
+        user.authenticated ? validatedRedirect("/user/profile") : setCheck(2)
       }, 2000);
     } else if (pathList[1] === "user") {
       user.authenticated ? setCheck(2) : setCheck(0);
@@ -44,21 +45,22 @@ const MiddlewareProvider: NextPage<Props> = ({ children }) => {
   }, [path, user]);
 
   if (!initiated) {
-    return children;
+    return <Home />
   }
-
-  if (check === 2) {
-    return children;
-  } else if (check === 3) {
-    redirect(goTo);
-  } else if (check === 0) {
-    redirect("/");
-  } else {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black bg-opacity-50">
-        <div className="w-16 h-16 border-8 border-dashed rounded-full animate-spin border-blue-600"></div>
-      </div>
-    );
+  else {
+    if (check === 2) {
+      return children;
+    } else if (check === 3) {
+      redirect(goTo);
+    } else if (check === 0) {
+      redirect("/");
+    } else {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black bg-opacity-50">
+          <div className="w-16 h-16 border-8 border-dashed rounded-full animate-spin border-blue-600"></div>
+        </div>
+      );
+    }
   }
 }
 

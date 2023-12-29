@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from "../store"
 
 // Define a type for the slice state
 interface User {
@@ -20,7 +18,7 @@ const initialState: User = {
         name: "dummy",
         user_name: "dummy",
         email: "dummy",
-        authenticated: true,
+        authenticated: false,
     }
 }
 
