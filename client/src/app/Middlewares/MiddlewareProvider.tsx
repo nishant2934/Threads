@@ -27,7 +27,7 @@ const MiddlewareProvider: NextPage<Props> = ({ children }) => {
     if (["login", "register", "forgot-password", "reset-password"].includes(pathList[1])) {
       setTimeout(() => {
         user.authenticated ? validatedRedirect("/user/profile") : setCheck(2)
-      }, 2000);
+      }, 500);
     } else if (pathList[1] === "user") {
       user.authenticated ? setCheck(2) : setCheck(0);
     } else {
@@ -44,7 +44,7 @@ const MiddlewareProvider: NextPage<Props> = ({ children }) => {
     }
   }, [path, user]);
 
-  if (!initiated) {
+  if (!initiated && path === "/") {
     return <Home />
   }
   else {

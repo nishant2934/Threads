@@ -14,23 +14,23 @@ interface User {
 // Define the initial state using that type
 const initialState: User = {
     value: {
-        user_id: "dummy",
-        name: "dummy",
-        user_name: "dummy",
-        email: "dummy",
+        user_id: "",
+        name: "",
+        user_name: "",
+        email: "",
         authenticated: false,
     }
 }
 
-export const counterSlice = createSlice({
+export const userSlice = createSlice({
   name: 'counter',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    logout: () => {
+    clear: () => {
         return initialState
     },
-    login:(state,action)=>{
+    setUser:(state,action)=>{
         return {
             value :{
                 ...action.payload
@@ -40,6 +40,6 @@ export const counterSlice = createSlice({
   },
 })
 
-export const {login,logout} = counterSlice.actions
+export const {setUser,clear} = userSlice.actions
 
-export default counterSlice.reducer
+export default userSlice.reducer
