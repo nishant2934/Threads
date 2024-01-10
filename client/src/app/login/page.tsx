@@ -64,7 +64,7 @@ const Page: NextPage<Props> = ({ }) => {
             <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
               Email
             </label>
-            <div className="mt-2.5">
+            <div className="mt-2.5">  
               <input
                 type="email"
                 name="email"
