@@ -1,23 +1,25 @@
 "use client"
 import { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useFormik } from 'formik';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
+import { catchApiResponse } from '@/helpers/transformers';
 
 interface Props { }
 
 const Page: NextPage<Props> = ({ }) => {
   const [passVisibility, setPassVisibility] = useState(false);
   const [initialValues, setInitialValues] = useState({ email: '', password: '' })
+  const [loginLoader,setLoginLoader] = useState(false);
 
   const validateForm = (values: any) => {
     const errors: any = {};
     if (!values?.email) {
-      errors.email = 'Email is required';
+      errors.email = 'Email is required.';
     }
     if (!values?.password) {
-      errors.password = 'Password is required';
+      errors.password = 'Password is required.';
     }
     return errors;
   };
@@ -28,6 +30,7 @@ const Page: NextPage<Props> = ({ }) => {
     validate: validateForm,
     onSubmit: async (values) => {
       try {
+        setLoginLoader(true)
         let { data } = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/login", values)
         if(!data?.error){
           toast.success(data?.message)
@@ -35,7 +38,11 @@ const Page: NextPage<Props> = ({ }) => {
         else{
           toast.error(data?.message)
         }
-      } catch (error) {}
+        setLoginLoader(false)
+      } catch (error) {
+        toast.error(toast.error(catchApiResponse(error)))
+        setLoginLoader(false)
+      }
     },
   });
   return (
@@ -110,16 +117,18 @@ const Page: NextPage<Props> = ({ }) => {
                   </svg>
               }
               {formik.errors.password ? <div className="text-sm text-red-500">{formik.errors.password}</div> : null}
-              {/* {JSON.stringify(formik.errors)} */}
             </div>
           </div>
         </div>
         <div className="mt-10">
           <button
+            disabled={loginLoader}
             type="submit"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Login
+            {
+              loginLoader ? "Logging in ..." :" Login"
+            }
           </button>
         </div>
       </form>

@@ -1,4 +1,5 @@
 "use client"
+import { catchApiResponse } from '@/helpers/transformers'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import { NextPage } from 'next'
@@ -9,15 +10,19 @@ interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
 
-  const [initialValues, setInitialValues] = useState({ first_name: "", last_name: "", email: "", password: "", confirm_password: "" });
+  const [initialValues, setInitialValues] = useState({ name: "", user_name: "", email: "", password: "", confirm_password: "" });
   const [passValidity, setPassValidity] = useState([{ name: "length", check: { msg: "Password length must be greater then 8.", status: false } }, { name: "lower_case", check: { msg: "Password must contain a lower case character.", status: false } }, { name: "upper_case", check: { msg: "Password must contain a upper case character.", status: false } }, { name: "special_char", check: { msg: "Password must contain a special character.", status: false } }, { name: "number", check: { msg: "Password must contain a number.", status: false } }])
   const [passVisibility,setPassVisibility]  = useState(false)
   const [confirmPassVisibility,setConfirmPassVisibility] = useState(false)
+  const [registrationLoader,setRegistrationLoader] = useState(false)
 
   const validateForm = (values: any) => {
     const errors: any = {};
-    if (!values?.first_name) {
-      errors.first_name = 'First name is required.';
+    if (!values?.name) {
+      errors.name = 'First name is required.';
+    }
+    if (!values?.user_name) {
+      errors.user_name = 'User name is required.';
     }
     if (!values?.email) {
       errors.email = 'Email is required.';
@@ -59,8 +64,19 @@ const Page: NextPage<Props> = ({}) => {
     validate: validateForm,
     onSubmit: async (values) => {
       try {
-        alert(JSON.stringify(values))
-      } catch (error) {}
+        setRegistrationLoader(true)
+        let { data } = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/register", values)
+        if(!data?.error){
+          toast.success(data?.message)
+        }
+        else{
+          toast.error(data?.message)
+        }
+        setRegistrationLoader(false)
+      } catch (error:any) {
+        setRegistrationLoader(false)
+        toast.error(catchApiResponse(error))
+      }
     },
   });
 
@@ -87,39 +103,40 @@ const Page: NextPage<Props> = ({}) => {
       <form className="mx-auto max-w-xl sm:mt-10" onSubmit={formik.handleSubmit}>
         <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
           <div>
-            <label htmlFor="first_name" className="block text-sm font-semibold leading-6 text-gray-900">
-              First name
+            <label htmlFor="name" className="block text-sm font-semibold leading-6 text-gray-900">
+              Name
             </label>
             <div className="mt-2.5">
               <input
                 type="text"
-                name="first_name"
-                id="first_name"
+                name="name"
+                id="name"
                 autoComplete="given-name"
-                value={formik.values.first_name}
+                value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
-            {formik.errors.first_name ? <div className="text-sm text-red-500">{formik.errors.first_name}</div> : null}
+            {formik.errors.name ? <div className="text-sm text-red-500">{formik.errors.name}</div> : null}
           </div>
           <div>
-            <label htmlFor="last_name" className="block text-sm font-semibold leading-6 text-gray-900">
-              Last name
+            <label htmlFor="user_name" className="block text-sm font-semibold leading-6 text-gray-900">
+              User Name
             </label>
             <div className="mt-2.5">
               <input
                 type="text"
-                name="last_name"
-                id="last_name"
+                name="user_name"
+                id="user_name"
                 autoComplete="family-name"
-                value={formik.values.last_name}
+                value={formik.values.user_name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            {formik.errors.user_name ? <div className="text-sm text-red-500">{formik.errors.user_name}</div> : null}
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -210,14 +227,14 @@ const Page: NextPage<Props> = ({}) => {
           </div>
 
           {
-            passValidity.map((item) => {
-              return <div className="sm:col-span-2">
+            passValidity.map((item,i) => {
+              return <div className="sm:col-span-2" key={i}>
                 <div className='relative'>
                   {
                     item?.check?.status ?
-                    <svg className="h-5 w-5 text-green-500 absolute" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M7 12l5 5l10 -10" />  <path d="M2 12l5 5m5 -5l5 -5" /></svg> :
+                    <svg className="h-5 w-5 text-green-500 absolute" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M7 12l5 5l10 -10" />  <path d="M2 12l5 5m5 -5l5 -5" /></svg> :
                       <svg className="h-5 w-5 text-red-500 absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                   }
                   <p className={`ml-6 text-sm ${item?.check?.status ? 'text-green-500' : 'text-red-500'}`}>{item.check.msg}</p>

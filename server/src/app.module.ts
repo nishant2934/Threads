@@ -19,6 +19,7 @@ import { GatewayModule } from './gateway/gateway.module';
 
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleWare).exclude('auth/(.*)').forRoutes('*');
+    consumer.apply(JwtMiddleWare).exclude('auth/(.*)').forRoutes('*')
+    consumer.apply(JwtMiddleWare).forRoutes('auth/validate')
   }
 }

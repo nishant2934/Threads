@@ -7,6 +7,7 @@ interface User {
         name: string,
         user_name: string,
         email: string,
+        token:string,
         authenticated: boolean,
     }
 }
@@ -18,6 +19,7 @@ const initialState: User = {
         name: "",
         user_name: "",
         email: "",
+        token:"",
         authenticated: false,
     }
 }
@@ -28,9 +30,11 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     clear: () => {
+        localStorage.clear()
         return initialState
     },
     setUser:(state,action)=>{
+        localStorage.setItem("token",action.payload.token)
         return {
             value :{
                 ...action.payload

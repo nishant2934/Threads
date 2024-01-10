@@ -28,6 +28,19 @@ export class AuthService {
         return this.response.success("made comment.","")
     }
 
+    async validate(user_id: string) {
+        try {
+            const user = await this.prisma.user.findFirst({ where: { id: user_id }, select: { name: true, user_name: true, email: true, id: true } })
+            if(user){
+                return this.response.success("Token validated successfully.", user)
+            }
+            return this.response.error("Token validation failed.")
+        } catch (error) {
+            console.log(error)
+            return this.response.systemError(error)
+        }
+    }
+
     async register(registerDto: registerDto) {
         try {
             registerDto.password = await this.hash.hash(registerDto.password);
@@ -44,12 +57,12 @@ export class AuthService {
         try {
             const { email, password } = loginDto;
             const user = await this.prisma.user.findFirst({ where: { email }, select:{password:true,name:true,user_name:true,email:true,id:true}})
-            if (user && this.hash.compare(password, user.password)) {
+            if (user && await this.hash.compare(password, user.password)) {
                 this.transformer.deleteObjKeys(["password"],user,true);
                 const token = await this.jwt.signAsync({id:user.id});
                 return this.response.success("Login Successful.", {...user,token})
             }
-            else return this.response.error("Credentials does not match.")
+            return this.response.error("Credentials does not match.")
         } catch (error) {
             console.log(error)
             return this.response.systemError(error)

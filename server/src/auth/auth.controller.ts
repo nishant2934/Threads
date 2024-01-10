@@ -8,10 +8,14 @@ import { RoleGuard } from './guards/roleguard';
 export class AuthController {
     constructor(private readonly auth: AuthService) { }
 
-    @Get()
     @UseGuards(RoleGuard)
     checker(){
         return this.auth.checker();
+    }
+
+    @Get("validate")
+    validate(@Body('user_id') user_id: string){
+        return this.auth.validate(user_id)
     }
 
     @Post("register")
