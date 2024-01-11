@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 // Define a type for the slice state
 interface User {
     value: {
-        user_id: string
+        id: string
         name: string,
         user_name: string,
         email: string,
@@ -15,7 +15,7 @@ interface User {
 // Define the initial state using that type
 const initialState: User = {
     value: {
-        user_id: "",
+        id: "",
         name: "",
         user_name: "",
         email: "",
@@ -25,7 +25,7 @@ const initialState: User = {
 }
 
 export const userSlice = createSlice({
-  name: 'counter',
+  name: 'user',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {

@@ -30,30 +30,29 @@ const MiddlewareProvider: NextPage<Props> = ({ children }) => {
 
   const validateToken = async (token: string) => {
     try {
-      let { data } = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/validate",{ headers: { Authorization: `Bearer ${token}` } })
+      let { data } = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/validate",{ headers: { Authorization: token } })
       if(!data?.error){
-        dispatch(setUser(data.result))
+        dispatch(setUser({...data.result,authenticated:true,token}))
+        return {...data.result,authenticated:true,token}
       }
       else{
         dispatch(clear())
+        return { id: "", name: "", user_name: "", email: "", token: "", authenticated: false }
       }
     } catch (error) {
       validatedRedirect("/")
     }
   }
-
+    
   const handleUserAuthentication = async () => {
     const pathList = path.split("/");
     let token = localStorage.getItem("token");
-    if(!user.authenticated && token){
-      validateToken(token)
-    }
+    let userToCheck = !user.authenticated && token ?  await validateToken(token) : user
+
     if (["login", "register", "forgot-password", "reset-password"].includes(pathList[1])) {
-      setTimeout(() => {
-        user.authenticated ? validatedRedirect("/user/profile") : setCheck(2)
-      }, 500);
+      userToCheck.authenticated ? validatedRedirect("/user/profile") : setCheck(2)
     } else if (pathList[1] === "user") {
-      user.authenticated ? setCheck(2) : setCheck(0);
+      userToCheck.authenticated ? setCheck(2) : setCheck(0);
     } else {
       setCheck(2);
     }

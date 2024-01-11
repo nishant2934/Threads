@@ -5,6 +5,8 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import {  toast } from 'react-toastify';
 import { catchApiResponse } from '@/helpers/transformers';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/slices/userSlice';
 
 interface Props { }
 
@@ -12,6 +14,7 @@ const Page: NextPage<Props> = ({ }) => {
   const [passVisibility, setPassVisibility] = useState(false);
   const [initialValues, setInitialValues] = useState({ email: '', password: '' })
   const [loginLoader,setLoginLoader] = useState(false);
+  const dispatch = useDispatch();
 
   const validateForm = (values: any) => {
     const errors: any = {};
@@ -33,6 +36,7 @@ const Page: NextPage<Props> = ({ }) => {
         setLoginLoader(true)
         let { data } = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/login", values)
         if(!data?.error){
+          dispatch(setUser({...data.result,authenticated:true, token:`Bearer ${data.result.token}`}))
           toast.success(data?.message)
         }
         else{
