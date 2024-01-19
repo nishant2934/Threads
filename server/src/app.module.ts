@@ -20,7 +20,7 @@ import { UploadsModule } from './uploads/uploads.module';
 
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleWare).exclude('auth/(.*)').forRoutes('*')
+    consumer.apply(JwtMiddleWare).exclude('auth/(.*)','/').forRoutes('*')
     consumer.apply(JwtMiddleWare).forRoutes('auth/validate')
   }
 }
