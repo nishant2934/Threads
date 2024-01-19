@@ -9,9 +9,10 @@ import { ThreadModule } from './thread/thread.module';
 import { JwtMiddleWare } from './middlewares/jwt.middleware';
 import { CommentModule } from './comment/comment.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, GlobalProviderModule, ThreadModule, CommentModule, GatewayModule],
+  imports: [PrismaModule, AuthModule, GlobalProviderModule, ThreadModule, CommentModule, GatewayModule, UploadsModule],
   controllers: [AppController],
   providers: [AppService, uniqueEmailValidation],
   exports: []
