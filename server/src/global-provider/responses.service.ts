@@ -10,10 +10,11 @@ export class ResponseService {
         }
     }
 
-    error(msg:string){
+    error(msg:string,result?:any){
         return {
             message:msg,
-            error:true
+            error:true,
+            result:result ? result : ""
         }
     }
 
